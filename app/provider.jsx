@@ -1,4 +1,6 @@
 "use client"
+import AppSideBar from "@/components/custom/AppSideBar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { useConvex } from "convex/react";
 import Header from "@/components/custom/Header";
@@ -38,7 +40,11 @@ function Provider({ children }) {
                         disableTransitionOnChange
                     >
                         <Header></Header>
-                        {children}
+                        <SidebarProvider defaultOpen={true}>
+                            <AppSideBar />
+                            {children}
+                        </SidebarProvider>
+                        
                     </NextThemesProvider>
                 </MessagesContext.Provider>
             </UserDetailContext.Provider>

@@ -1,4 +1,5 @@
 "use client";
+import { useSidebar } from "../ui/sidebar";
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import React, { useContext, useEffect } from 'react';
@@ -21,6 +22,7 @@ export default function ChatView() {
   const workspaceData = useQuery(api.workspace.GetWorkspace, id ? { workspaceId: id } : "skip");
   const [loading, setLoading] = React.useState(false);
   const UpdateMessages = useMutation(api.workspace.UpdateMessages);
+  const {toggleSidebar} = useSidebar();
   useEffect(() => {
     if (workspaceData?.message) {
       setMessages(workspaceData.message);
@@ -75,7 +77,7 @@ export default function ChatView() {
   };
   return (
     <div className='relative h-[85vh] flex flex-col'>
-      <div className='flex-1 overflow-y-scroll scrollbar-hide'>
+      <div className='flex-1 overflow-y-scroll scrollbar-hide px-5'>
         <h2 className="text-2xl font-bold mb-4">Chat View</h2>
 
         {messages && messages.length > 0 ? (
@@ -96,6 +98,8 @@ export default function ChatView() {
           <h2>Generating response...</h2>
         </div>
       </div>
+      <div className='flex gap-2 items-end'>
+        {userDetail&&<Image src={userDetail?.picture} alt="user" width={30} height={30} className='rounded-full cursor-pointer' onClick={toggleSidebar}/>}
       <div className=" bg-gray-950 p-5 border rounded-xl max-w-2xl w-full mt-3">
         <div className="flex gap-2 ">
           <textarea value={userInput} className="outline-none bg-transparent w-full h-32 max-h-56 resize" placeholder={Lookup.HERO_HEADING}
@@ -106,6 +110,7 @@ export default function ChatView() {
           <Link className="h-5 w-5"></Link>
         </div>
       </div>
+    </div>
     </div>
   );
 }
