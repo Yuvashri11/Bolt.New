@@ -10,9 +10,11 @@ import { User } from "lucide-react";
 import { UserDetailContext } from "@/context/UserDetailContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { api } from "@/convex/_generated/api";
+import { ActionContext } from "@/context/ActionContext";
 function Provider({ children }) {
     const [messages, setMessages] = useState();
     const [userDetail,setUserDetail] = useState()
+    const [action,setAction] = useState();
     const convex=useConvex()
     useEffect(() => {
         isAuthenticated();
@@ -20,6 +22,7 @@ function Provider({ children }) {
     const isAuthenticated = async() => {
         if (typeof window !== 'undefined') { 
             const user = JSON.parse(localStorage.getItem("user"));
+
             const res=await convex.query(api.users.GetUser, { email:user?.email }  );
             console.log(res)
             if (user) {
@@ -33,6 +36,7 @@ function Provider({ children }) {
             <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
             <UserDetailContext.Provider value={{userDetail, setUserDetail}}>
                 <MessagesContext.Provider value={{ messages, setMessages }}>
+                    <ActionContext.Provider value={{action, setAction}}>
                     <NextThemesProvider
                         attribute="class"
                         defaultTheme="dark"
@@ -46,6 +50,7 @@ function Provider({ children }) {
                         </SidebarProvider>
                         
                     </NextThemesProvider>
+                    </ActionContext.Provider>
                 </MessagesContext.Provider>
             </UserDetailContext.Provider>
             </GoogleOAuthProvider>

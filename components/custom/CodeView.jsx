@@ -1,5 +1,6 @@
 
 "use client";
+import SandpackPreviewClient from "./SandpackPreviewClient";
 import axios from "axios";
 import Lookup from "@/app/data/Lookup";
 import { DEPENDANCY } from "@/app/data/Lookup";
@@ -14,7 +15,7 @@ import {
   SandpackFileExplorer,
 } from "@codesandbox/sandpack-react";
 import CODE_GEN_PROMPT from "@/app/data/Prompt";
-import { useRef,useContext, useEffect, useState } from "react";
+import { useRef, useContext, useEffect, useState } from "react";
 export default function CodeView() {
   const [activeTab, setActiveTab] = useState("code");
   const [files, setFiles] = useState({})
@@ -29,15 +30,15 @@ export default function CodeView() {
       }
     }
   }, [messages]);
-//   useEffect(() => {
-//   if (!hasGenerated.current && messages && messages.length > 0) {
-//     const lastMessage = messages[messages.length - 1];
-//     if (lastMessage.role === 'user') {
-//       hasGenerated.current = true; // ✅ block future triggers
-//       GenerateAiCode();
-//     }
-//   }
-// }, [messages]);
+  //   useEffect(() => {
+  //   if (!hasGenerated.current && messages && messages.length > 0) {
+  //     const lastMessage = messages[messages.length - 1];
+  //     if (lastMessage.role === 'user') {
+  //       hasGenerated.current = true; // ✅ block future triggers
+  //       GenerateAiCode();
+  //     }
+  //   }
+  // }, [messages]);
 
   const flattenToRoot = (files) => {
     const updated = {};
@@ -58,20 +59,20 @@ export default function CodeView() {
     const result = await axios.post('/api/gen-ai-code', {
       prompt: PROMPT
     });
-    console.log("res",result.data);
+    console.log("res", result.data);
     const resp = result.data
     const mergedFiles = result.data.files
-    console.log("m",mergedFiles);
-    
-    if (mergedFiles["/src/index.js"]) {
-        mergedFiles["/src/index.js"].code = mergedFiles["/src/index.js"].code.replace(
-          /from\s+['"]\.\/App['"]/,
-          'from "./App"'
-        );
-      }
+    console.log("m", mergedFiles);
 
-      const flatFiles = flattenToRoot(mergedFiles);
-      setFiles(flatFiles);
+    if (mergedFiles["/src/index.js"]) {
+      mergedFiles["/src/index.js"].code = mergedFiles["/src/index.js"].code.replace(
+        /from\s+['"]\.\/App['"]/,
+        'from "./App"'
+      );
+    }
+
+    const flatFiles = flattenToRoot(mergedFiles);
+    setFiles(flatFiles);
   }
 
   return (
@@ -80,8 +81,8 @@ export default function CodeView() {
         <button
           onClick={() => setActiveTab("code")}
           className={`text-sm font-medium px-4 py-1 rounded-full transition ${activeTab === "code"
-              ? "bg-blue-600 text-white"
-              : "bg-[#2a2a2a] text-gray-300 hover:bg-[#3a3a3a]"
+            ? "bg-blue-600 text-white"
+            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#3a3a3a]"
             }`}
         >
           Code
@@ -89,14 +90,20 @@ export default function CodeView() {
         <button
           onClick={() => setActiveTab("preview")}
           className={`text-sm font-medium px-4 py-1 rounded-full transition ${activeTab === "preview"
-              ? "bg-blue-600 text-white"
-              : "bg-[#2a2a2a] text-gray-300 hover:bg-[#3a3a3a]"
+            ? "bg-blue-600 text-white"
+            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#3a3a3a]"
             }`}
         >
           Preview
         </button>
       </div>
-      <SandpackProvider files={files} template="react" theme="dark" customSetup={{ dependencies: DEPENDANCY }} options={{ externalResources: ['https://cdn.tailwindcss.com'] }}>
+      <SandpackProvider files={files} template="react" theme="dark" customSetup={{
+        dependencies: {
+          ...DEPENDANCY,
+          uuid: "latest"
+        }
+      }}
+      >
         <SandpackLayout
           className="flex-1 rounded-xl border border-[#444] overflow-hidden"
           style={{
@@ -116,7 +123,7 @@ export default function CodeView() {
               </div>
             </div>
           ) : (
-            <SandpackPreview style={{ height: "100%", width: "100%" }} showNavigator={true} />
+            <SandpackPreviewClient />
           )}
         </SandpackLayout>
       </SandpackProvider>
