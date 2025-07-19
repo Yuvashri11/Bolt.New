@@ -18,14 +18,13 @@ export default function SandpackPreviewClient() {
             const res = await client.getCodeSandboxURL()
             console.log(res)
             if (action?.actionType === 'deploy') {
-                const result = await client.getCodeSandboxURL();
                 window.open(`https://${res?.sandboxId}.csb.app/`);
 
             }
 
             else if (action?.actionType === 'export') {
                 window.open(res.editorUrl);
-
+                
             }
         };
     }

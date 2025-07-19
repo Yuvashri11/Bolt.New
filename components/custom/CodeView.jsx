@@ -15,13 +15,19 @@ import {
   SandpackFileExplorer,
 } from "@codesandbox/sandpack-react";
 import CODE_GEN_PROMPT from "@/app/data/Prompt";
+import { ActionContext } from "@/context/ActionContext";
+
 import { useRef, useContext, useEffect, useState } from "react";
 export default function CodeView() {
   const [activeTab, setActiveTab] = useState("code");
   const [files, setFiles] = useState({})
   const { messages, setMessages } = useContext(MessagesContext)
   const hasGenerated = useRef(false);
+  const {action, setAction} = useContext(ActionContext);
 
+  useEffect(() => {
+    setActiveTab('preview')
+  }, [action]);
   useEffect(() => {
     if (messages && messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
