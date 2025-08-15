@@ -10,13 +10,11 @@ export default function SandpackPreviewClient() {
     const { action, setAction } = useContext(ActionContext);
     useEffect(() => {
         GetSandPackClient()
-    }, [sandpack && action]);
+    }, [sandpack,action]);
     const GetSandPackClient = async () => {
         const client = previewRef.current?.getClient()
         if (client) {
-            console.log(client)
             const res = await client.getCodeSandboxURL()
-            console.log(res)
             if (action?.actionType === 'deploy') {
                 const result = await client.getCodeSandboxURL();
                 window.open(`https://${res?.sandboxId}.csb.app/`);

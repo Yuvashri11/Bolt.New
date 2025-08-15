@@ -72,7 +72,6 @@ export default function ChatView() {
     const msg = { role: "user", content: input };
     setMessages((prevMessages) => [...prevMessages, msg]);
     console.log("User Detail in ChatView:", userDetail);
-    await GetAiResponse();
     setUserInput("");
   };
   return (
@@ -85,7 +84,10 @@ export default function ChatView() {
             <div key={index} className="bg-zinc-800 p-2 rounded-lg mb-2 flex flex-col gap-2 items-center leading-7">
 
               {msg?.role === 'user' && <Image src={userDetail?.picture} alt="User Avatar" width={40} height={40} className="inline-block mr-2 rounded-full" />}
-              <ReactMarkdown>{msg.content}</ReactMarkdown>
+              <ReactMarkdown allowedElements={[
+                    'p','ul','ol','li','strong','em','a','blockquote','hr','br',
+                    'img','h1','h2','h3','h4','h5','h6'
+                  ]}>{msg.content.replace(/```[\s\S]*?```/g, '').trim() || '_Code moved to the Code tab_'}</ReactMarkdown>
             </div>
           ))
         ) : (
@@ -93,11 +95,14 @@ export default function ChatView() {
         )}
 
 
-        <div className='bg-zinc-800 mb-2 p-2 rounded-lg flex gap-2 items-center'>
-          <Loader2Icon className={`h-6 w-6 text-blue-500 ${loading ? 'animate-spin' : 'hidden'}`} />
-          <h2>Generating response...</h2>
+        {loading && (
+          <div className='bg-zinc-800 mb-2 p-2 rounded-lg flex gap-2 items-center'>
+            <Loader2Icon className={`h-6 w-6 text-blue-500 ${loading ? 'animate-spin' : 'hidden'}`} />
+            <h2>Generating response...</h2>
+          </div>
+        )}
         </div>
-      </div>
+      
       <div className='flex gap-2 items-end'>
         {userDetail&&<Image src={userDetail?.picture} alt="user" width={30} height={30} className='rounded-full cursor-pointer' onClick={toggleSidebar}/>}
       <div className=" bg-gray-950 p-5 border rounded-xl max-w-2xl w-full mt-3">

@@ -26,9 +26,7 @@ export default function Hero() {
       return;
     }
     const msg={ role: "user", content: input }
-    setMessages(
-      msg
-    );
+    setMessages((prev) => ([...(Array.isArray(prev) ? prev : []), msg]));
     console.log("userDetail", userDetail);
     console.log("userDetail._id", userDetail?._id);
     const workspaceId = await CreateWorkspace({

@@ -19,6 +19,8 @@ export default function CodeView() {
   const [files, setFiles] = useState({})
   const { messages, setMessages } = useContext(MessagesContext)
   const hasGenerated = useRef(false);
+  const filesKey = JSON.stringify(Object.keys(files).sort());
+
 
   useEffect(() => {
     if (messages && messages.length > 0) {
@@ -50,6 +52,32 @@ export default function CodeView() {
     }
     return updated;
   };
+  
+const ensureEntrypoint = (f) => {
+  const out = { ...f };
+  // Allow App.jsx -> App.js
+  if (!out["/App.js"] && out["/App.jsx"]) {
+     out["/App.js"] = out["/App.jsx"];
+    }
+    // Minimal App if missing
+    if (!out["/App.js"]) {
+      out["/App.js"] = {
+        code: `export default function App(){ return <div style={{padding:16}}>Hello 👋</div>; }`
+      };
+    }
+    // Minimal index.js if missing
+    if (!out["/index.js"]) {
+      out["/index.js"] = {
+        code: `import React from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+const root = createRoot(document.getElementById("root"));
+root.render(<App />);`
+      };
+    }
+    return out;
+  };
+
 
 
   const GenerateAiCode = async () => {
@@ -70,7 +98,10 @@ export default function CodeView() {
     }
 
     const flatFiles = flattenToRoot(mergedFiles);
-    setFiles(flatFiles);
+    const safeFiles = ensureEntrypoint(flatFiles);
+    setFiles(safeFiles);
+    setActiveTab("preview");
+
   }
 
   return (
@@ -95,7 +126,7 @@ export default function CodeView() {
           Preview
         </button>
       </div>
-      <SandpackProvider files={files} template="react" theme="dark" customSetup={{
+      <SandpackProvider key={filesKey} files={files} template="react" theme="dark" customSetup={{
         dependencies: {
           ...DEPENDANCY,
           uuid: "latest"
