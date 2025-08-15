@@ -4,7 +4,7 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import React, { useContext, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { useConvex, useMutation } from 'convex/react';
+import {useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import Image from 'next/image';
 import { ArrowRight, Link, Loader2Icon } from 'lucide-react';

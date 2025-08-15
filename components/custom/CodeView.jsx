@@ -2,9 +2,7 @@
 "use client";
 import SandpackPreviewClient from "./SandpackPreviewClient";
 import axios from "axios";
-import Lookup from "@/app/data/Lookup";
 import { DEPENDANCY } from "@/app/data/Lookup";
-import { DEFAULT_FILE } from "@/app/data/Lookup";
 import { MessagesContext } from "@/context/MessagesContext";
 import Prompt from "@/app/data/Prompt";
 import {
